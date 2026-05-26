@@ -1,15 +1,24 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quimica Quest</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#050a05}
+body{display:flex;justify-content:center;align-items:flex-start;padding:12px;min-height:100vh}
+
 #gr{
   font-family:'Press Start 2P',monospace;
-  background:#0a0a1a;
+  background:#060e06;
   color:#00ff88;
-  min-height:600px;
-  padding:18px 16px;
-  border:3px solid #00ff88;
-  border-radius:4px;
+  width:100%;
+  max-width:660px;
+  padding:18px 16px 24px;
+  border:3px solid #00cc66;
+  border-radius:6px;
   position:relative;
   overflow:hidden;
 }
@@ -19,219 +28,457 @@
   pointer-events:none;z-index:0;
 }
 .z{position:relative;z-index:1}
-.title{font-size:13px;color:#00ff88;text-align:center;letter-spacing:2px;margin-bottom:4px;text-shadow:0 0 8px #00ff88}
-.sub{font-size:9px;color:#0088ff;text-align:center;margin-bottom:14px}
-.hud{display:flex;justify-content:space-between;font-size:10px;color:#ffcc00;margin-bottom:12px;border:1px solid #333;padding:8px 12px;background:#111}
-.lives{font-size:16px;color:#ff3344;letter-spacing:6px;text-align:center;margin-bottom:10px}
-.pbar{height:10px;background:#111;border:1px solid #444;margin-bottom:12px}
-.pfill{height:100%;background:#00ff88;transition:width 0.3s}
-.qbox{background:#111;border:2px solid #00ff88;padding:18px 14px;margin-bottom:16px}
-.qcat{font-size:9px;color:#0088ff;margin-bottom:10px}
-.qtxt{font-size:13px;color:#ffcc00;line-height:1.8}
-.arena{
-  display:flex;justify-content:space-around;align-items:flex-end;
-  margin-bottom:10px;min-height:140px;
-  border:2px solid #333;background:#0d0d20;padding:10px 6px 0;
-}
-.slot{display:flex;flex-direction:column;align-items:center;width:30%;gap:0}
-.scientist{font-size:34px;line-height:1;margin-bottom:0;transition:transform 0.1s;filter:drop-shadow(0 0 8px #ffcc00)}
+
+.title{font-size:clamp(13px,3.5vw,18px);color:#00ff88;text-align:center;letter-spacing:2px;margin-bottom:4px;text-shadow:0 0 10px #00cc66}
+.sub{font-size:clamp(8px,2vw,11px);color:#00aaff;text-align:center;margin-bottom:14px}
+
+.hud{display:flex;justify-content:space-between;font-size:clamp(9px,2.2vw,13px);color:#ffcc00;margin-bottom:12px;border:1px solid #1a3a1a;padding:8px 12px;background:#060e06}
+
+.lives{font-size:clamp(16px,4vw,22px);color:#ff4444;letter-spacing:6px;text-align:center;margin-bottom:9px}
+
+.pbar{height:10px;background:#060e06;border:1px solid #1a3a1a;margin-bottom:12px;border-radius:2px}
+.pfill{height:100%;background:#00cc66;transition:width 0.3s;border-radius:2px}
+
+.lvl-badge{text-align:center;font-size:clamp(8px,2vw,11px);color:#00ff88;margin-bottom:6px;letter-spacing:1px}
+.mech-icon{font-size:clamp(9px,2.2vw,12px);color:#66ffcc;text-align:center;margin-bottom:8px;letter-spacing:1px}
+
+.qbox{background:#060e06;border:2px solid #00cc66;padding:16px 14px;margin-bottom:14px;border-radius:4px}
+.qcat{font-size:clamp(8px,2vw,11px);color:#00aaff;margin-bottom:8px}
+.qtxt{font-size:clamp(12px,3vw,16px);color:#ffcc00;line-height:2}
+
+.arena{display:flex;justify-content:space-around;align-items:flex-end;margin-bottom:12px;min-height:clamp(130px,25vw,160px);border:2px solid #1a3a1a;background:#020702;padding:10px 4px 0;border-radius:4px}
+.slot{display:flex;flex-direction:column;align-items:center;width:31%}
+.scientist{font-size:clamp(30px,7vw,42px);line-height:1;filter:drop-shadow(0 0 8px #00ff88)}
 .scientist.hidden{visibility:hidden}
 .scientist.jump{animation:jump 0.25s ease-out}
-@keyframes jump{0%{transform:translateY(0)}50%{transform:translateY(-14px)}100%{transform:translateY(0)}}
-.platform{
-  width:100%;font-size:11px;color:#fff;
-  background:#1a1a3a;border:2px solid #555;
-  padding:12px 6px;text-align:center;line-height:1.6;
-  margin-top:2px;min-height:64px;display:flex;align-items:center;justify-content:center;
-}
-.platform.active{border-color:#0088ff;color:#0088ff;background:#0088ff15}
-.platform.correct{border-color:#00ff88!important;background:#00ff8822!important;color:#00ff88!important;animation:fl 0.3s 3}
-.platform.wrong{border-color:#ff3344!important;background:#ff334422!important;color:#ff3344!important;animation:sh 0.3s}
-@keyframes fl{0%,100%{opacity:1}50%{opacity:0.3}}
-@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.hint{font-size:9px;color:#888;text-align:center;margin:8px 0 6px}
-.fb{font-size:11px;text-align:center;min-height:30px;line-height:1.8;margin-bottom:6px}
-.fb.ok{color:#00ff88}
-.fb.err{color:#ff3344}
-.exp{font-size:9px;color:#aaa;display:block;margin-top:6px}
-.next-hint{font-size:9px;color:#ffcc00;text-align:center;animation:blink 0.8s infinite;margin-top:6px}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.start-screen,.win,.gameover{text-align:center;padding:16px 0}
-.big-emoji{font-size:56px;display:block;margin:8px auto}
-.start-screen h2{font-size:16px;color:#00ff88;margin-bottom:12px;text-shadow:0 0 12px #00ff88}
-.start-screen p{font-size:9px;color:#aaa;line-height:2.6;margin-bottom:18px}
-.badge{display:inline-block;background:#0088ff22;border:1px solid #0088ff;color:#0088ff;font-size:8px;padding:4px 9px;margin:3px}
-.gbtn{
-  background:#00ff88;border:2px solid #00ff88;color:#000;
-  font-family:'Press Start 2P',monospace;font-size:11px;
-  padding:14px 28px;cursor:pointer;margin-top:8px;
-}
-.gbtn:hover{background:#fff}
-.gbtn.yellow{background:#ffcc00;border-color:#ffcc00}
-.win h2{font-size:15px;color:#ffcc00;margin-bottom:14px;text-shadow:0 0 10px #ffcc00}
-.gameover h2{font-size:15px;color:#ff3344;margin-bottom:14px;text-shadow:0 0 10px #ff3344}
-.final{font-size:11px;color:#ffcc00;margin-bottom:18px;line-height:2.4}
-</style>
+@keyframes jump{0%{transform:translateY(0)}50%{transform:translateY(-16px)}100%{transform:translateY(0)}}
 
+.platform{
+  width:100%;
+  font-size:clamp(10px,2.5vw,14px);
+  color:#ccffee;
+  background:#091a09;
+  border:2px solid #1a4a1a;
+  padding:12px 5px;
+  text-align:center;
+  line-height:1.7;
+  margin-top:3px;
+  min-height:clamp(58px,14vw,74px);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  border-radius:3px;
+  transition:background 0.1s,border-color 0.1s;
+  user-select:none;
+}
+.platform:active{transform:scale(0.97)}
+.platform.active{border-color:#00cc66;color:#00ff88;background:#0d2a0d}
+.platform.correct{border-color:#00ff88!important;background:#002a1033!important;color:#00ff88!important;animation:fl 0.3s 3}
+.platform.wrong{border-color:#ff4444!important;background:#2a000033!important;color:#ff4444!important;animation:sh 0.3s}
+@keyframes fl{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.hint{font-size:clamp(8px,1.8vw,10px);color:#3a5a3a;text-align:center;margin:6px 0 5px}
+.touch-only{display:none}
+@media(hover:none) and (pointer:coarse){.hint{display:none}.touch-only{display:block}}
+
+.touch-nav{display:none;justify-content:center;gap:14px;margin:10px 0 4px}
+@media(hover:none) and (pointer:coarse){.touch-nav{display:flex}}
+.tnav-btn{
+  background:#0d2a0d;border:2px solid #00cc66;color:#00ff88;
+  font-family:'Press Start 2P',monospace;font-size:clamp(12px,4vw,18px);
+  padding:12px 22px;cursor:pointer;border-radius:4px;user-select:none;
+}
+.tnav-btn:active{background:#00cc66;transform:scale(0.95)}
+
+.confirm-btn{
+  display:none;background:#00cc66;border:2px solid #00ff88;color:#000;
+  font-family:'Press Start 2P',monospace;font-size:clamp(10px,2.5vw,13px);
+  padding:13px 28px;cursor:pointer;border-radius:4px;margin:8px auto 0;user-select:none;
+}
+.confirm-btn.show{display:block}
+@media(hover:none) and (pointer:coarse){
+  .confirm-btn{display:block;opacity:0.4;pointer-events:none}
+  .confirm-btn.show{opacity:1;pointer-events:auto}
+}
+
+.fb{font-size:clamp(10px,2.5vw,13px);text-align:center;min-height:30px;line-height:2;margin-bottom:4px}
+.fb.ok{color:#00ff88}
+.fb.err{color:#ff4444}
+.exp{font-size:clamp(8px,2vw,11px);color:#669966;display:block;margin-top:6px;line-height:1.8}
+.next-hint{font-size:clamp(8px,2vw,11px);color:#ffcc00;text-align:center;animation:blink 0.8s infinite;margin-top:6px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.start-screen,.win,.gameover{text-align:center;padding:14px 0}
+.big-emoji{font-size:clamp(48px,12vw,64px);display:block;margin:8px auto}
+.start-screen h2{font-size:clamp(14px,4vw,20px);color:#00ff88;margin-bottom:12px;text-shadow:0 0 10px #00cc66}
+.start-screen p{font-size:clamp(9px,2.2vw,12px);color:#669966;line-height:2.8;margin-bottom:18px}
+.badge{display:inline-block;background:#0d2a0d;border:1px solid #00cc66;color:#00ff88;font-size:clamp(8px,1.8vw,11px);padding:4px 10px;margin:3px}
+.gbtn{
+  background:#00cc66;border:2px solid #00ff88;color:#000;
+  font-family:'Press Start 2P',monospace;font-size:clamp(11px,2.8vw,15px);
+  padding:15px 30px;cursor:pointer;margin-top:10px;border-radius:4px;
+}
+.gbtn:hover,.gbtn:active{background:#00ff88}
+.gbtn.gold{background:#cc8800;border-color:#ffcc00;color:#fff}
+.gbtn.gold:hover,.gbtn.gold:active{background:#ffcc00;color:#000}
+.win h2{font-size:clamp(14px,4vw,20px);color:#ffcc00;margin-bottom:14px;text-shadow:0 0 10px #cc8800}
+.gameover h2{font-size:clamp(14px,4vw,20px);color:#ff4444;margin-bottom:14px;text-shadow:0 0 10px #cc0000}
+.final{font-size:clamp(10px,2.5vw,14px);color:#ffcc00;margin-bottom:18px;line-height:2.6}
+.lvl-intro h2{font-size:clamp(14px,4vw,19px);margin-bottom:10px}
+.lvl-intro p{font-size:clamp(9px,2.2vw,12px);color:#669966;line-height:2.6;margin-bottom:20px}
+</style>
+</head>
+<body>
 <div id="gr">
-<div class="z">
-  <div class="title">⚗ QUIMICA QUEST ⚗</div>
-  <div class="sub"></div>
-  <div class="hud">
-    <span>PTS: <span id="score">0</span></span>
-    <span>LVL: <span id="level">1</span></span>
-    <span>COMBO: <span id="combo">x1</span></span>
+  <div class="z">
+    <div class="title">⚗ QUIMICA QUEST ⚗</div>
+    <div class="hud">
+      <span>PTS: <span id="score">0</span></span>
+      <span>LVL: <span id="level">1</span></span>
+      <span>COMBO: <span id="combo">x1</span></span>
+    </div>
+    <div id="sc" class="z"></div>
   </div>
-  <div id="sc" class="z"></div>
-</div>
 </div>
 
 <script>
-const Q=[
-  {cat:"Tabla Periódica",q:"¿Símbolo del ORO?",opts:["Au","Or","Ag"],ans:0,exp:"Au del latín AURUM = oro"},
-  {cat:"Tabla Periódica",q:"¿Electrones del OXÍGENO?",opts:["6","10","8"],ans:2,exp:"Número atómico del O = 8"},
-  {cat:"Compuestos",q:"¿Qué compuesto es H₂O?",opts:["Agua","Sal","Ácido"],ans:0,exp:"H₂O = 2 hidrógenos + 1 oxígeno"},
-  {cat:"Compuestos",q:"¿Fórmula de la SAL DE MESA?",opts:["KCl","NaCl","HCl"],ans:1,exp:"NaCl = Cloruro de sodio"},
-  {cat:"Estados",q:"¿A qué °C hierve el agua?",opts:["100°","80°","120°"],ans:0,exp:"100°C a presión atmosférica normal"},
-  {cat:"Tabla Periódica",q:"¿Qué elemento es Fe?",opts:["Flúor","Francio","Hierro"],ans:2,exp:"Fe del latín FERRUM = hierro"},
-  {cat:"Compuestos",q:"CO₂ es el...",opts:["Metano","Ozono","Dióxido de carbono"],ans:2,exp:"C=carbono + O₂=dos oxígenos"},
-  {cat:"Reacciones",q:"¿Reacción que da luz y calor?",opts:["Síntesis","Descomposición","Combustión"],ans:2,exp:"La combustión libera energía"},
-  {cat:"Tabla Periódica",q:"Gas más abundante en el aire:",opts:["Nitrógeno","Oxigeno","Argón"],ans:0,exp:"N₂ = 78% de la atmósfera"},
-  {cat:"Tabla Periódica",q:"¿Símbolo del SODIO?",opts:["So","Na","Sn"],ans:1,exp:"Na del latín NATRIUM"},
-  {cat:"Estados",q:"Sólido → Gas directamente:",opts:["Fusión","Condensación","Sublimación"],ans:2,exp:"Sublimación: sin pasar por líquido"},
-  {cat:"Tabla Periódica",q:"¿Cuántos elementos hay?",opts:["112","118","124"],ans:1,exp:"118 elementos confirmados"},
-  {cat:"Reacciones",q:"Ácido + Base produce...",opts:["Gas+Metal","Sal+Agua","Solo sal"],ans:1,exp:"Neutralización → Sal + H₂O"},
-  {cat:"Tabla Periódica",q:"¿Símbolo del POTASIO?",opts:["Po","Pt","K"],ans:2,exp:"K del latín KALIUM"},
-  {cat:"Compuestos",q:"¿Fórmula del DIÓXIDO DE CARBONO?",opts:["CO","CO₂","C₂O"],ans:1,exp:"1 carbono + 2 oxígenos"},
+/* ════════════════════════════════════════
+   BASE DE DATOS DE PREGUNTAS
+   Cada pregunta tiene: cat, q, opts (3), ans (índice 0-2), exp, level (1=fácil, 2=medio, 3=difícil)
+════════════════════════════════════════ */
+const ALL_Q = [
+  /* ── NIVEL 1: Tabla periódica básica ── */
+  {cat:"Tabla Periódica", q:"¿Cuál es el símbolo del ORO?",           opts:["Au","Or","Ag"],           ans:0, exp:"Au viene del latín AURUM", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuál es el símbolo del HIERRO?",        opts:["He","Fe","Hi"],           ans:1, exp:"Fe viene del latín FERRUM", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuál es el símbolo del SODIO?",         opts:["So","Sd","Na"],           ans:2, exp:"Na viene del latín NATRIUM", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuál es el símbolo del POTASIO?",       opts:["Po","Pt","K"],            ans:2, exp:"K viene del latín KALIUM", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuál es el símbolo del PLOMO?",         opts:["Pl","Pb","Pm"],           ans:1, exp:"Pb viene del latín PLUMBUM", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuántos electrones tiene el OXÍGENO?",  opts:["6","8","10"],             ans:1, exp:"Número atómico del O = 8", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuántos electrones tiene el CARBONO?",  opts:["4","6","8"],              ans:1, exp:"Número atómico del C = 6", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuántos electrones tiene el HIDRÓGENO?",opts:["1","2","3"],              ans:0, exp:"Número atómico del H = 1", lv:1},
+  {cat:"Tabla Periódica", q:"¿Qué gas es más abundante en la atmósfera?", opts:["Oxígeno","Nitrógeno","Argón"], ans:1, exp:"N₂ = 78% de la atmósfera", lv:1},
+  {cat:"Tabla Periódica", q:"¿Cuántos elementos tiene la tabla periódica?", opts:["112","118","124"],  ans:1, exp:"118 elementos confirmados hasta hoy", lv:1},
+
+  /* ── NIVEL 1: Compuestos básicos ── */
+  {cat:"Compuestos", q:"¿Qué compuesto es H₂O?",                      opts:["Sal","Agua","Ácido"],     ans:1, exp:"H₂O = 2 hidrógenos + 1 oxígeno", lv:1},
+  {cat:"Compuestos", q:"¿Cuál es la fórmula de la SAL DE MESA?",      opts:["KCl","NaCl","HCl"],      ans:1, exp:"NaCl = Cloruro de sodio", lv:1},
+  {cat:"Compuestos", q:"¿Qué gas forma el CO₂?",                      opts:["Metano","Dióxido de carbono","Ozono"], ans:1, exp:"C + O₂ = dióxido de carbono", lv:1},
+  {cat:"Compuestos", q:"¿Cuál es la fórmula del DIÓXIDO DE CARBONO?", opts:["CO","CO₂","C₂O"],        ans:1, exp:"1 carbono + 2 oxígenos = CO₂", lv:1},
+  {cat:"Compuestos", q:"¿Qué es el O₃?",                              opts:["Oxígeno","Ozono","Óxido"], ans:1, exp:"O₃ = ozono, 3 átomos de oxígeno", lv:1},
+
+  /* ── NIVEL 2: Estados y reacciones ── */
+  {cat:"Estados", q:"¿A qué temperatura hierve el agua (°C)?",        opts:["80°","100°","120°"],      ans:1, exp:"100°C a presión atmosférica normal", lv:2},
+  {cat:"Estados", q:"¿A qué temperatura se congela el agua (°C)?",    opts:["-10°","0°","4°"],         ans:1, exp:"0°C = punto de congelación del agua", lv:2},
+  {cat:"Estados", q:"Sólido → Gas sin pasar por líquido:",            opts:["Fusión","Condensación","Sublimación"], ans:2, exp:"Sublimación: sólido → gas directamente", lv:2},
+  {cat:"Estados", q:"Líquido → Gas se llama:",                        opts:["Fusión","Evaporación","Solidificación"], ans:1, exp:"Evaporación: líquido → gas", lv:2},
+  {cat:"Estados", q:"Gas → Líquido se llama:",                        opts:["Condensación","Fusión","Sublimación"], ans:0, exp:"Condensación: gas → líquido", lv:2},
+  {cat:"Reacciones", q:"¿Qué tipo de reacción produce luz y calor?",  opts:["Síntesis","Combustión","Descomposición"], ans:1, exp:"La combustión libera energía en forma de luz y calor", lv:2},
+  {cat:"Reacciones", q:"Ácido + Base produce...",                     opts:["Gas+Metal","Sal+Agua","Solo sal"], ans:1, exp:"Neutralización: Ácido + Base → Sal + H₂O", lv:2},
+  {cat:"Reacciones", q:"¿Qué es una reacción de SÍNTESIS?",          opts:["A+B→AB","AB→A+B","A+BC→AC+B"], ans:0, exp:"Síntesis: dos o más elementos se combinan en uno", lv:2},
+  {cat:"Reacciones", q:"En NaOH, ¿Na es un...?",                     opts:["Metal alcalino","No metal","Gas noble"], ans:0, exp:"Sodio (Na) está en el grupo 1: metales alcalinos", lv:2},
+  {cat:"Tabla Periódica", q:"¿En qué grupo están los GAS NOBLES?",   opts:["Grupo 1","Grupo 17","Grupo 18"], ans:2, exp:"Los gases nobles ocupan el grupo 18 (última columna)", lv:2},
+
+  /* ── NIVEL 3: Avanzado ── */
+  {cat:"Tabla Periódica", q:"¿Qué elemento tiene número atómico 6?",  opts:["Nitrógeno","Carbono","Oxígeno"], ans:1, exp:"C = carbono, número atómico 6", lv:3},
+  {cat:"Tabla Periódica", q:"¿Cuál es el elemento más liviano?",      opts:["Helio","Hidrógeno","Litio"],    ans:1, exp:"H es el elemento más liviano (masa atómica ≈1)", lv:3},
+  {cat:"Tabla Periódica", q:"¿Qué son los HALÓGENOS?",               opts:["Grupo 1","Grupo 17","Grupo 18"], ans:1, exp:"Halógenos = Grupo 17: F, Cl, Br, I, At", lv:3},
+  {cat:"Compuestos", q:"¿Cuál es la fórmula del ÁCIDO CLORHÍDRICO?", opts:["HCl","HF","H₂SO₄"],            ans:0, exp:"HCl = ácido clorhídrico (1H + 1Cl)", lv:3},
+  {cat:"Compuestos", q:"¿Cuál es la fórmula del ÁCIDO SULFÚRICO?",   opts:["HCl","H₂SO₄","H₂CO₃"],        ans:1, exp:"H₂SO₄ = ácido sulfúrico", lv:3},
+  {cat:"Compuestos", q:"¿Cuál es la fórmula del AGUA OXIGENADA?",    opts:["H₂O","H₂O₂","HO"],            ans:1, exp:"H₂O₂ = peróxido de hidrógeno (agua oxigenada)", lv:3},
+  {cat:"Reacciones", q:"¿Qué ley establece que la masa no se crea ni destruye?", opts:["Ley de Boyle","Ley de Lavoisier","Ley de Dalton"], ans:1, exp:"Ley de conservación de la masa - Lavoisier (1789)", lv:3},
+  {cat:"Reacciones", q:"¿Qué partícula tiene carga negativa?",       opts:["Protón","Neutrón","Electrón"],  ans:2, exp:"El electrón tiene carga negativa (-1)", lv:3},
+  {cat:"Reacciones", q:"¿Qué partícula tiene carga positiva?",       opts:["Protón","Neutrón","Electrón"],  ans:0, exp:"El protón tiene carga positiva (+1)", lv:3},
+  {cat:"Tabla Periódica", q:"¿Cuántos protones tiene el HELIO?",     opts:["1","2","4"],                    ans:1, exp:"He tiene número atómico 2 → 2 protones", lv:3},
 ];
 
-let qs,cur,score,lives,combo,answered,total,pos;
-const sc=document.getElementById('sc');
-const scoreEl=document.getElementById('score');
-const levelEl=document.getElementById('level');
-const comboEl=document.getElementById('combo');
+const LEVELS = [
+  {name:"BÁSICO",        emoji:"🟢", color:"#00ff88", lvFilter:[1],   questions:6, mechPool:["identify","translate"]},
+  {name:"INTERMEDIO",    emoji:"🟡", color:"#ffcc00", lvFilter:[1,2], questions:7, mechPool:["identify","translate","reverse"]},
+  {name:"AVANZADO",      emoji:"🔴", color:"#ff4444", lvFilter:[2,3], questions:7, mechPool:["identify","reverse","tricky"]},
+];
 
-function shuffle(a){return[...a].sort(()=>Math.random()-0.5)}
+const MECH_LABELS = {
+  identify: "🔬 IDENTIFICAR",
+  translate:"⚗  FÓRMULAS",
+  reverse:  "🧪 ¿CUÁL ES?",
+  tricky:   "💡 RAZONAMIENTO",
+};
 
+/* ════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════ */
+function shuffle(a){ return [...a].sort(()=>Math.random()-0.5); }
+function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
+function pick(a,n){ return shuffle(a).slice(0,n); }
+
+/* Mezcla las 3 opciones de una pregunta (y actualiza ans) */
+function shuffleOpts(q){
+  const pairs = q.opts.map((o,i)=>({o,correct:i===q.ans}));
+  const mixed = shuffle(pairs);
+  return {
+    ...q,
+    opts: mixed.map(p=>p.o),
+    ans:  mixed.findIndex(p=>p.correct),
+  };
+}
+
+/* ════════════════════════════════════════
+   GENERADORES DE PREGUNTAS
+   Cada mecánica transforma una pregunta del banco
+════════════════════════════════════════ */
+function makeIdentify(pool, used){
+  const q = shuffle(pool.filter(x=>!used.has(x.q)))[0] || shuffle(pool)[0];
+  used.add(q.q);
+  return { mech:"identify", ...shuffleOpts(q) };
+}
+
+/* Versión "inversa": muestra la respuesta, pregunta qué es */
+function makeReverse(pool, used){
+  const q = shuffle(pool.filter(x=>!used.has('R:'+x.q) && x.cat==="Tabla Periódica"))[0]
+         || shuffle(pool)[0];
+  used.add('R:'+q.q);
+  /* Usa la respuesta correcta como pregunta */
+  const correctOpt = q.opts[q.ans];
+  const wrongOpts  = pick(q.opts.filter((_,i)=>i!==q.ans), 2);
+  const opts       = shuffle([correctOpt, ...wrongOpts]);
+  return {
+    mech:"reverse", cat:q.cat,
+    q: `¿A qué corresponde "${correctOpt}"?`,
+    opts, ans: opts.indexOf(correctOpt),
+    exp: q.exp,
+  };
+}
+
+function makeTranslate(pool, used){
+  return makeIdentify(pool.filter(q=>q.cat==="Compuestos"||q.cat==="Tabla Periódica"), used);
+}
+
+function makeTricky(pool, used){
+  return makeIdentify(pool.filter(q=>q.cat==="Reacciones"||q.cat==="Estados"), used);
+}
+
+function buildLevelQuestions(lv){
+  const pool = shuffle(ALL_Q.filter(q=>lv.lvFilter.includes(q.lv)));
+  const used  = new Set();
+  const mechs = shuffle([...lv.mechPool, ...lv.mechPool]).slice(0, lv.questions);
+  return mechs.map(m=>{
+    if(m==="identify")  return makeIdentify(pool, used);
+    if(m==="translate") return makeTranslate(pool, used);
+    if(m==="reverse")   return makeReverse(pool, used);
+    return makeTricky(pool, used);
+  });
+}
+
+/* ════════════════════════════════════════
+   ESTADO DEL JUEGO
+════════════════════════════════════════ */
+let lvlQuestions, cur, score, lives, combo, answered, total, pos, lvlIdx;
+
+const sc      = document.getElementById('sc');
+const scoreEl = document.getElementById('score');
+const levelEl = document.getElementById('level');
+const comboEl = document.getElementById('combo');
+
+function updateHUD(){
+  scoreEl.textContent = score;
+  levelEl.textContent = lvlIdx + 1;
+  comboEl.textContent = 'x' + combo;
+}
+
+/* ════════════════════════════════════════
+   PANTALLAS
+════════════════════════════════════════ */
 function showStart(){
-  sc.innerHTML=`<div class="start-screen">
-    <span class="big-emoji">🧑‍🔬</span>
-    <h2>QUIMICA QUEST</h2>
-    <p>Mové al científico con ← →<br>y confirmá con ↑ o ENTER<br><br>
-    <span class="badge">Tabla Periódica</span>
-    <span class="badge">Compuestos</span>
-    <span class="badge">Estados</span>
-    <span class="badge">Reacciones</span><br><br>
-    15 preguntas · 3 vidas · combo x</p>
-    <button class="gbtn" onclick="startGame()">▶ INICIAR</button>
-  </div>`;
+  sc.innerHTML = `
+    <div class="start-screen">
+      <span class="big-emoji">🧑‍🔬</span>
+      <h2>QUIMICA QUEST</h2>
+      <p>
+        Mové al científico con ← →<br>
+        confirmá con ↑ o ENTER<br>
+        <em style="color:#00cc66;font-size:0.9em">(en celular: tocá la opción!)</em><br><br>
+        <span class="badge">⚛ Tabla Periódica</span>
+        <span class="badge">🧪 Compuestos</span>
+        <span class="badge">🌡 Estados</span>
+        <span class="badge">⚡ Reacciones</span><br><br>
+        3 niveles · 3 vidas · combo x
+      </p>
+      <button class="gbtn" onclick="startGame()">▶ INICIAR JUEGO</button>
+    </div>`;
 }
 
 function startGame(){
-  qs=shuffle(Q);cur=0;score=0;lives=3;combo=1;answered=false;total=qs.length;pos=1;
-  updateHUD();showQ();
+  score=0; lives=3; combo=1; answered=false; lvlIdx=0;
+  startLevel();
 }
 
-function updateHUD(){
-  scoreEl.textContent=score;
-  levelEl.textContent=Math.floor(cur/5)+1;
-  comboEl.textContent='x'+combo;
+function startLevel(){
+  lvlQuestions = buildLevelQuestions(LEVELS[lvlIdx]);
+  cur=0; total=lvlQuestions.length;
+  updateHUD();
+  showLevelIntro();
+}
+
+function showLevelIntro(){
+  const lv = LEVELS[lvlIdx];
+  sc.innerHTML = `
+    <div class="start-screen lvl-intro">
+      <span class="big-emoji">${lv.emoji}</span>
+      <h2 style="color:${lv.color}">${lv.name}</h2>
+      <p>
+        Nivel ${lvlIdx+1} de ${LEVELS.length}<br>
+        ${lv.questions} preguntas<br><br>
+        Mecánicas:<br>
+        ${lv.mechPool.map(m=>'<span class="badge">'+MECH_LABELS[m]+'</span>').join('<br>')}
+      </p>
+      <button class="gbtn" onclick="showQ()">▶ ¡COMENZAR!</button>
+    </div>`;
 }
 
 function showQ(){
-  if(cur>=total){showWin();return;}
-  answered=false;pos=1;
-  const q=qs[cur];
-  const pct=Math.round((cur/total)*100);
-  sc.innerHTML=`
+  if(cur >= total){
+    if(lvlIdx < LEVELS.length-1){ lvlIdx++; startLevel(); }
+    else showWin();
+    return;
+  }
+  answered = false; pos = 1;
+  const q   = lvlQuestions[cur];
+  const pct = Math.round((cur/total)*100);
+
+  sc.innerHTML = `
     <div class="lives">${'♥'.repeat(lives)}${'♡'.repeat(3-lives)}</div>
     <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
+    <div class="lvl-badge">${LEVELS[lvlIdx].name} · P${cur+1}/${total}</div>
+    <div class="mech-icon">${MECH_LABELS[q.mech]}</div>
     <div class="qbox">
-      <div class="qcat">[${q.cat}] · ${cur+1}/${total}</div>
+      <div class="qcat">[${q.cat}]</div>
       <div class="qtxt">${q.q}</div>
     </div>
     <div class="arena" id="arena">
       ${q.opts.map((o,i)=>`
-      <div class="slot" id="slot${i}">
-        <div class="scientist${i===1?'':' hidden'}" id="mk${i}">🧑‍🔬</div>
-        <div class="platform${i===1?' active':''}" id="pl${i}">${o}</div>
-      </div>`).join('')}
+        <div class="slot" id="slot${i}">
+          <div class="scientist${i===1?'':' hidden'}" id="mk${i}">🧑‍🔬</div>
+          <div class="platform${i===1?' active':''}" id="pl${i}"
+               ontouchstart="tapOption(${i})"
+               onclick="tapOption(${i})">${o}</div>
+        </div>`).join('')}
     </div>
     <div class="hint">← → mover &nbsp;|&nbsp; ↑ / ENTER confirmar</div>
+    <div class="touch-nav">
+      <button class="tnav-btn" ontouchstart="moveSci(Math.max(0,pos-1))" onclick="moveSci(Math.max(0,pos-1))">◀</button>
+      <button class="tnav-btn" ontouchstart="moveSci(Math.min(2,pos+1))" onclick="moveSci(Math.min(2,pos+1))">▶</button>
+    </div>
+    <button class="confirm-btn" id="cbtn" ontouchstart="handleConfirmOrNext()" onclick="handleConfirmOrNext()">✓ CONFIRMAR</button>
     <div class="fb" id="fb"></div>`;
 }
 
+/* ════════════════════════════════════════
+   INTERACCIÓN
+════════════════════════════════════════ */
 function moveSci(newPos){
-  if(answered)return;
-  const old=pos; pos=newPos;
+  if(answered) return;
+  const old = pos; pos = newPos;
   document.getElementById('mk'+old).classList.add('hidden');
   document.getElementById('mk'+newPos).classList.remove('hidden');
   document.getElementById('pl'+old).classList.remove('active');
   document.getElementById('pl'+newPos).classList.add('active');
 }
 
-function confirm(){
-  if(answered)return;
-  answered=true;
-  const q=qs[cur];
-  const fb=document.getElementById('fb');
-  const mk=document.getElementById('mk'+pos);
-  mk.classList.add('jump');
-  setTimeout(()=>mk.classList.remove('jump'),300);
+function tapOption(i){
+  if(answered) return;
+  moveSci(i);
+  setTimeout(()=>confirm(), 120);
+}
 
-  if(pos===q.ans){
+function handleConfirmOrNext(){
+  if(!answered) confirm();
+  else { cur++; showQ(); }
+}
+
+function confirm(){
+  if(answered) return;
+  answered = true;
+  const q  = lvlQuestions[cur];
+  const fb = document.getElementById('fb');
+  const mk = document.getElementById('mk'+pos);
+  mk.classList.add('jump');
+  setTimeout(()=>mk.classList.remove('jump'), 300);
+
+  if(pos === q.ans){
     document.getElementById('pl'+pos).classList.add('correct');
-    const pts=10*combo;
-    score+=pts; combo=Math.min(combo+1,5);
-    fb.className='fb ok';
-    fb.innerHTML=`✓ CORRECTO! +${pts} PTS<span class="exp">${q.exp}</span>`;
+    const pts = 10 * combo;
+    score += pts;
+    combo = Math.min(combo+1, 5);
+    fb.className = 'fb ok';
+    fb.innerHTML = `✓ ¡CORRECTO! +${pts} PTS<span class="exp">${q.exp}</span>`;
   } else {
     document.getElementById('pl'+pos).classList.add('wrong');
     document.getElementById('pl'+q.ans).classList.add('correct');
-    lives--; combo=1;
-    fb.className='fb err';
-    fb.innerHTML=`✗ INCORRECTO<span class="exp">${q.exp}</span>`;
-    if(lives<=0){updateHUD();setTimeout(showGameOver,900);return;}
+    lives--; combo = 1;
+    fb.className = 'fb err';
+    fb.innerHTML = `✗ INCORRECTO<span class="exp">${q.exp}</span>`;
+    if(lives <= 0){ updateHUD(); setTimeout(showGameOver, 900); return; }
   }
   updateHUD();
+
+  const cb = document.getElementById('cbtn');
+  if(cb){ cb.textContent = '▶ SIGUIENTE'; cb.classList.add('show'); }
+
   setTimeout(()=>{
-    const h=document.createElement('div');
-    h.className='next-hint';
-    h.textContent='ENTER para continuar';
-    fb.appendChild(h);
-  },400);
+    const h = document.createElement('div');
+    h.className   = 'next-hint';
+    h.textContent = 'ENTER / tocá SIGUIENTE para continuar';
+    if(fb) fb.appendChild(h);
+  }, 400);
 }
 
-document.addEventListener('keydown',e=>{
-  if(['ArrowLeft','ArrowRight','ArrowUp','Enter'].includes(e.key))e.preventDefault();
-  if(e.key==='ArrowLeft') moveSci(Math.max(0,pos-1));
-  else if(e.key==='ArrowRight') moveSci(Math.min(2,pos+1));
+/* ════════════════════════════════════════
+   TECLADO
+════════════════════════════════════════ */
+document.addEventListener('keydown', e=>{
+  if(['ArrowLeft','ArrowRight','ArrowUp','Enter'].includes(e.key)) e.preventDefault();
+  if(e.key==='ArrowLeft')                    moveSci(Math.max(0, pos-1));
+  else if(e.key==='ArrowRight')              moveSci(Math.min(2, pos+1));
   else if(e.key==='ArrowUp'||e.key==='Enter'){
     if(!answered) confirm();
-    else{cur++;showQ();}
+    else { cur++; showQ(); }
   }
 });
 
+/* ════════════════════════════════════════
+   PANTALLAS FINALES
+════════════════════════════════════════ */
 function showGameOver(){
-  sc.innerHTML=`<div class="gameover">
-    <span class="big-emoji">💀</span>
-    <h2>GAME OVER</h2>
-    <div class="final">PUNTUACIÓN: ${score} PTS<br>PREGUNTAS: ${cur}/${total}</div>
-    <button class="gbtn" onclick="startGame()">↺ REINTENTAR</button>
-  </div>`;
+  sc.innerHTML = `
+    <div class="gameover">
+      <span class="big-emoji">💀</span>
+      <h2>GAME OVER</h2>
+      <div class="final">
+        PUNTUACIÓN: ${score} PTS<br>
+        NIVEL: ${LEVELS[lvlIdx].name}<br>
+        PREGUNTA: ${cur}/${total}
+      </div>
+      <button class="gbtn" onclick="startGame()">↺ REINTENTAR</button>
+    </div>`;
 }
 
 function showWin(){
-  let m='🥉';
-  if(score>=120)m='🥇';
-  else if(score>=80)m='🥈';
-  sc.innerHTML=`<div class="win">
-    <span class="big-emoji">${m}</span>
-    <h2>¡COMPLETADO!</h2>
-    <div class="final">PUNTUACIÓN: ${score} / 150 PTS<br>VIDAS: ${'♥'.repeat(lives)}</div>
-    <button class="gbtn yellow" onclick="startGame()">↺ JUGAR DE NUEVO</button>
-  </div>`;
+  let medal = '🥉';
+  if(score >= 160) medal = '🥇';
+  else if(score >= 110) medal = '🥈';
+  sc.innerHTML = `
+    <div class="win">
+      <span class="big-emoji">${medal}</span>
+      <h2>¡COMPLETADO!</h2>
+      <div class="final">
+        PUNTUACIÓN: ${score} / 200 PTS<br>
+        VIDAS: ${'♥'.repeat(lives)}
+      </div>
+      <button class="gbtn gold" onclick="startGame()">↺ JUGAR DE NUEVO</button>
+    </div>`;
 }
 
 showStart();
 </script>
+</body>
+</html>
